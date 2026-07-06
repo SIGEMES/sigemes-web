@@ -64,14 +64,12 @@
             <div
               v-for="filter in activeFilters"
               :key="filter.key"
-              class="inline-flex items-center rent-column bg-blue-500 text-white pl-3 pr-1.5 py-1 rounded-full text-sm font-medium shadow-sm"
+              class="inline-flex items-center rent-column bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium"
             >
               <span>{{ filter.label }}</span>
               <button
-                type="button"
-                @click.stop.prevent="removeActiveFilter(filter.key)"
-                class="ml-2 text-white hover:bg-blue-600 font-bold text-base rounded-full w-5 h-5 flex items-center justify-center cursor-pointer transition-colors select-none line-height-none"
-                style="line-height: 0;"
+                @click="removeActiveFilter(filter.key)"
+                class="ml-2 text-white hover:bg-blue-600 font-bold text-lg leading-none rounded-full w-5 h-5 flex items-center justify-center"
                 title="Hapus filter"
               >
                 ×
@@ -900,8 +898,7 @@ export default {
     // Add computed property for paginated rentals
     paginatedRentals() {
       // Data sudah dipaginasi oleh backend, langsung kembalikan rentals
-      // return this.rentals;
-      return this.applyClientSideFilters(this.rentals);
+      return this.rentals;
     },
 
     // Computed property untuk active filters
@@ -1102,25 +1099,22 @@ export default {
       switch (this.sortBy) {
         case 'newest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateB - dateA // Terbaru dulu (descending)
           })
 
         case 'oldest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateA - dateB // Terlama dulu (ascending)
           })
 
         case 'name':
           return sortedData.sort((a, b) => {
-            // Prioritaskan membaca objek renter.fullname bawaan JSON API agar tidak terkena race condition
-            const nameA = (a.renter?.fullname || a.renterName || '-').toLowerCase()
-            const nameB = (b.renter?.fullname || b.renterName || '-').toLowerCase()
+            const nameA = (a.renterName || a.renter?.fullname || '').toLowerCase()
+            const nameB = (b.renterName || b.renter?.fullname || '').toLowerCase()
             return nameA.localeCompare(nameB, 'id', { numeric: true }) // Urut abjad A-Z
           })
 
@@ -1167,8 +1161,6 @@ export default {
 
     // Method untuk remove active filter chip
     removeActiveFilter(filterKey) {
-      console.log('Menghapus filter dengan key:', filterKey);
-
       switch (filterKey) {
         case 'dateRange':
           this.appliedFilterAllDates = true
@@ -1446,91 +1438,91 @@ export default {
 
     // UPDATED FETCH RENTALS WITH CLIENT-SIDE FILTERING
     async fetchRentals() {
-      this.isLoading = true;
-      this.errorMessage = '';
+  this.isLoading = true;
+  this.errorMessage = '';
 
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) throw new Error('Token tidak ditemukan. Silakan login kembali.');
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) throw new Error('Token tidak ditemukan. Silakan login kembali.');
 
-        const params = new URLSearchParams({
-          page: this.currentPage, 
-          limit: this.itemsPerPage, 
-        });
+    const params = new URLSearchParams({
+      page: this.currentPage, 
+      limit: this.itemsPerPage, 
+    });
 
-        if (this.searchQuery) {
-          params.append('search', this.searchQuery);
-        }
+    if (this.searchQuery) {
+      params.append('search', this.searchQuery);
+    }
 
-        if (!this.appliedFilterAllDates) {
-          if (this.appliedFilterStartDate) params.append('start_date', this.appliedFilterStartDate);
-          if (this.appliedFilterEndDate) params.append('end_date', this.appliedFilterEndDate);
-        }
+    if (!this.appliedFilterAllDates) {
+      if (this.appliedFilterStartDate) params.append('start_date', this.appliedFilterStartDate);
+      if (this.appliedFilterEndDate) params.append('end_date', this.appliedFilterEndDate);
+    }
 
-        // 1. FILTER JENIS SEWA
-        if (this.appliedFilterRentalType) {
-          params.append('rental_type', this.appliedFilterRentalType); 
-          // CATATAN: Jika belum bekerja, tanyakan ke orang backend apakah key-nya 'rental_type' atau hanya 'type'
-        }
+    // 1. FILTER JENIS SEWA
+    if (this.appliedFilterRentalType) {
+      params.append('rental_type', this.appliedFilterRentalType); 
+      // CATATAN: Jika belum bekerja, tanyakan ke orang backend apakah key-nya 'rental_type' atau hanya 'type'
+    }
 
-        // 2. FILTER STATUS PEMBAYARAN (Sesuaikan dengan spec Framework Backend-mu)
-        if (this.appliedSelectedPaymentStatuses && this.appliedSelectedPaymentStatuses.length > 0) {
-          
-          // OPSI 1: Format Standar / Node.js / Express / Python (Paling sering digunakan)
-          // Hasilnya: ?payment_status=gagal&payment_status=dibayar
-          this.appliedSelectedPaymentStatuses.forEach(status => {
-            params.append('payment_status', status);
-          });
+    // 2. FILTER STATUS PEMBAYARAN (Sesuaikan dengan spec Framework Backend-mu)
+    if (this.appliedSelectedPaymentStatuses && this.appliedSelectedPaymentStatuses.length > 0) {
+      
+      // OPSI 1: Format Standar / Node.js / Express / Python (Paling sering digunakan)
+      // Hasilnya: ?payment_status=gagal&payment_status=dibayar
+      this.appliedSelectedPaymentStatuses.forEach(status => {
+        params.append('payment_status', status);
+      });
 
-          // OPSI 2: Format Laravel (PHP) jika opsi 1 gagal
-          // Hasilnya: ?payment_status[]=gagal&payment_status[]=dibayar
-          // (Aktifkan baris di bawah ini dan hapus Opsi 1 jika backend-mu Laravel)
-          /*
-          this.appliedSelectedPaymentStatuses.forEach(status => {
-            params.append('payment_status[]', status);
-          });
-          */
+      // OPSI 2: Format Laravel (PHP) jika opsi 1 gagal
+      // Hasilnya: ?payment_status[]=gagal&payment_status[]=dibayar
+      // (Aktifkan baris di bawah ini dan hapus Opsi 1 jika backend-mu Laravel)
+      /*
+      this.appliedSelectedPaymentStatuses.forEach(status => {
+        params.append('payment_status[]', status);
+      });
+      */
 
-          // OPSI 3: Format String Pisah Koma
-          // Hasilnya: ?payment_status=gagal,dibayar
-          /*
-          params.append('payment_status', this.appliedSelectedPaymentStatuses.join(','));
-          */
-        }
-        
-        if (this.sortBy) {
-          params.append('sort', this.sortBy);
-        }
+      // OPSI 3: Format String Pisah Koma
+      // Hasilnya: ?payment_status=gagal,dibayar
+      /*
+      params.append('payment_status', this.appliedSelectedPaymentStatuses.join(','));
+      */
+    }
+    
+    if (this.sortBy) {
+      params.append('sort', this.sortBy);
+    }
 
-        const response = await apiService.getRentals(params);
+    const response = await apiService.getRentals(params);
 
-        if (response.data.status) {
-          this.rentals = response.data.data;
-          
-          // FIX BUG: Sesuaikan dengan 'total_data' dari response JSON asli backend
-          if (response.data.pagination) {
-            this.totalData = response.data.pagination.total_data; // <-- Diubah dari .total menjadi .total_data
-            this.totalPages = response.data.pagination.last_page;
-          } else {
-            this.totalData = response.data.total_data || response.data.total || this.rentals.length;
-            this.totalPages = response.data.last_page || Math.ceil(this.totalData / this.itemsPerPage);
-          }
-
-          // SIFATNYA OPSIONAL: Karena renter sudah include di JSON, fungsi di bawah ini 
-          // sebenarnya bisa kamu hapus/komentari agar aplikasi berjalan jauh lebih cepat.
-          // Jika di tabel/komponen lain kamu memanggil `rental.renterName`, kamu bisa ganti panggilannya menjadi `rental.renter?.fullname`.
-          await this.fetchRenterDetails();
-          
-        } else {
-          this.errorMessage = 'Gagal mengambil data sewa.';
-        }
-      } catch (error) {
-        console.error('Error fetching rentals:', error);
-        this.errorMessage = error.response?.data?.message || 'Gagal mengambil data. Coba lagi nanti.';
-      } finally {
-        this.isLoading = false;
+    if (response.data.status) {
+      this.rentals = response.data.data;
+      
+      // FIX BUG: Sesuaikan dengan 'total_data' dari response JSON asli backend
+      if (response.data.pagination) {
+        this.totalData = response.data.pagination.total_data; // <-- Diubah dari .total menjadi .total_data
+        this.totalPages = response.data.pagination.last_page;
+      } else {
+        this.totalData = response.data.total_data || response.data.total || this.rentals.length;
+        this.totalPages = response.data.last_page || Math.ceil(this.totalData / this.itemsPerPage);
       }
-    },
+
+      // SIFATNYA OPSIONAL: Karena renter sudah include di JSON, fungsi di bawah ini 
+      // sebenarnya bisa kamu hapus/komentari agar aplikasi berjalan jauh lebih cepat.
+      // Jika di tabel/komponen lain kamu memanggil `rental.renterName`, kamu bisa ganti panggilannya menjadi `rental.renter?.fullname`.
+      await this.fetchRenterDetails();
+      
+    } else {
+      this.errorMessage = 'Gagal mengambil data sewa.';
+    }
+  } catch (error) {
+    console.error('Error fetching rentals:', error);
+    this.errorMessage = error.response?.data?.message || 'Gagal mengambil data. Coba lagi nanti.';
+  } finally {
+    this.isLoading = false;
+  }
+},
 
     async fetchRenterDetails() {
       const renterMap = new Map()

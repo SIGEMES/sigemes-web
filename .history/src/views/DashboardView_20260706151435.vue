@@ -60,25 +60,25 @@
 
         <!-- Tampilan Filter Aktif (Active Filter Chips) -->
         <div v-if="activeFilters.length > 0" class="mt-4 mb-4">
-          <div class="flex justify-center flex-wrap gap-2">
-            <div
-              v-for="filter in activeFilters"
-              :key="filter.key"
-              class="inline-flex items-center rent-column bg-blue-500 text-white pl-3 pr-1.5 py-1 rounded-full text-sm font-medium shadow-sm"
-            >
-              <span>{{ filter.label }}</span>
-              <button
-                type="button"
-                @click.stop.prevent="removeActiveFilter(filter.key)"
-                class="ml-2 text-white hover:bg-blue-600 font-bold text-base rounded-full w-5 h-5 flex items-center justify-center cursor-pointer transition-colors select-none line-height-none"
-                style="line-height: 0;"
-                title="Hapus filter"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        </div>
+  <div class="flex justify-center flex-wrap gap-2">
+    <div
+      v-for="filter in activeFilters"
+      :key="filter.key"
+      class="inline-flex items-center rent-column bg-blue-500 text-white pl-3 pr-1.5 py-1 rounded-full text-sm font-medium shadow-sm"
+    >
+      <span>{{ filter.label }}</span>
+      <button
+        type="button"
+        @click.stop.prevent="removeActiveFilter(filter.key)"
+        class="ml-2 text-white hover:bg-blue-600 font-bold text-base rounded-full w-5 h-5 flex items-center justify-center cursor-pointer transition-colors select-none line-height-none"
+        style="line-height: 0;"
+        title="Hapus filter"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+</div>
 
         <!-- Tabel Penyewaan -->
         <div class="mt-6">
@@ -938,12 +938,12 @@ export default {
 
         if (statusLabels.length === 1) {
           filters.push({
-            key: 'paymentStatus',
+            key: 'status',
             label: `Status Pembayaran: ${statusLabels[0]}`,
           })
         } else {
           filters.push({
-            key: 'paymentStatus',
+            key: 'status',
             label: `Status Pembayaran: ${statusLabels.join(', ')}`,
           })
         }
@@ -1102,25 +1102,22 @@ export default {
       switch (this.sortBy) {
         case 'newest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateB - dateA // Terbaru dulu (descending)
           })
 
         case 'oldest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateA - dateB // Terlama dulu (ascending)
           })
 
         case 'name':
           return sortedData.sort((a, b) => {
-            // Prioritaskan membaca objek renter.fullname bawaan JSON API agar tidak terkena race condition
-            const nameA = (a.renter?.fullname || a.renterName || '-').toLowerCase()
-            const nameB = (b.renter?.fullname || b.renterName || '-').toLowerCase()
+            const nameA = (a.renterName || a.renter?.fullname || '').toLowerCase()
+            const nameB = (b.renterName || b.renter?.fullname || '').toLowerCase()
             return nameA.localeCompare(nameB, 'id', { numeric: true }) // Urut abjad A-Z
           })
 
@@ -1167,8 +1164,6 @@ export default {
 
     // Method untuk remove active filter chip
     removeActiveFilter(filterKey) {
-      console.log('Menghapus filter dengan key:', filterKey);
-
       switch (filterKey) {
         case 'dateRange':
           this.appliedFilterAllDates = true

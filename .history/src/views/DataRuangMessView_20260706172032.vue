@@ -3241,6 +3241,15 @@ export default {
   inject: ['showToast'],
 
   watch: {
+    currentSlideIndex() { this.isImageLoading = true },
+    currentPhotoIndex() { this.isImageLoading = true },
+    currentEditPhotoIndex() { this.isImageLoading = true },
+    currentReviewSlideIndex() { this.isImageLoading = true },
+    showSlideshow(val) { if (val) this.isImageLoading = true },
+    showCreatePhotoSlideshow(val) { if (val) this.isImageLoading = true },
+    showEditPhotoSlideshow(val) { if (val) this.isImageLoading = true },
+    showReviewSlideshow(val) { if (val) this.isImageLoading = true },
+
     formStep(newVal, oldVal) {
       if (newVal === 1 && oldVal === 2) {
         this.$nextTick(() => {
@@ -3338,6 +3347,7 @@ export default {
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
       isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isImageLoading: false, // Loading state untuk foto
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,

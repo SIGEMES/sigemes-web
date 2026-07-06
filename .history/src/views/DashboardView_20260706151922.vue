@@ -943,7 +943,7 @@ export default {
           })
         } else {
           filters.push({
-            key: 'paymentStatus',
+            key: 'status',
             label: `Status Pembayaran: ${statusLabels.join(', ')}`,
           })
         }
@@ -1102,25 +1102,22 @@ export default {
       switch (this.sortBy) {
         case 'newest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateB - dateA // Terbaru dulu (descending)
           })
 
         case 'oldest':
           return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
+            const dateA = new Date(a.created_at)
+            const dateB = new Date(b.created_at)
             return dateA - dateB // Terlama dulu (ascending)
           })
 
         case 'name':
           return sortedData.sort((a, b) => {
-            // Prioritaskan membaca objek renter.fullname bawaan JSON API agar tidak terkena race condition
-            const nameA = (a.renter?.fullname || a.renterName || '-').toLowerCase()
-            const nameB = (b.renter?.fullname || b.renterName || '-').toLowerCase()
+            const nameA = (a.renterName || a.renter?.fullname || '').toLowerCase()
+            const nameB = (b.renterName || b.renter?.fullname || '').toLowerCase()
             return nameA.localeCompare(nameB, 'id', { numeric: true }) // Urut abjad A-Z
           })
 

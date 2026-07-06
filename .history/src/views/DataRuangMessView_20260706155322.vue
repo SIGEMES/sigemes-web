@@ -3084,12 +3084,10 @@
         v-if="showSlideshow"
         class="photo-slideshow fixed inset-0 flex items-center justify-center z-50"
       >
-        <!-- Overlay hitam sebagai background -->
         <div class="absolute inset-0 bg-black bg-opacity-75"></div>
 
-        <!-- Container utama dengan tombol close di luar container foto -->
         <div class="relative w-full h-full max-w-5xl max-h-screen p-4 flex flex-col">
-          <!-- Tombol Close - di pojok kanan atas, tidak terikat pada foto -->
+          
           <button
             @click="showSlideshow = false"
             class="absolute top-4 right-4 z-30 bg-black bg-opacity-50 text-white hover:text-gray-200 p-2 rounded-full"
@@ -3110,40 +3108,35 @@
             </svg>
           </button>
 
-          <!-- Container untuk foto yang dibatasi ukurannya -->
           <div class="flex-1 flex items-center justify-center mt-8 mb-12 overflow-hidden">
             <img
-              :src="selectedGuesthouse?.guesthouse_media[currentSlideIndex]?.url"
-              :alt="selectedGuesthouse?.name"
+              :src="selectedCityHall?.media[currentSlideIndex]?.url"
+              :alt="selectedCityHall?.name"
               class="max-w-full max-h-full object-contain"
             />
           </div>
 
-          <!-- Navigasi dan counter foto -->
           <div class="flex justify-between items-center w-full px-4">
-            <!-- Previous Button -->
             <button
               @click="prevSlide"
-              class="navigation-button bg-white bg-opacity-75 hover:bg-opacity-100 rounded-full p-3 text-xl z-20"
+              class="navigation-button text-black bg-white bg-opacity-75 hover:bg-opacity-100 rounded-full p-3 text-xl z-20"
               :disabled="currentSlideIndex === 0"
               :class="{ 'opacity-50 cursor-not-allowed': currentSlideIndex === 0 }"
             >
               ◀
             </button>
 
-            <!-- Counter foto -->
             <div class="bg-black bg-opacity-50 text-white px-4 py-2 rounded-full z-20">
-              {{ currentSlideIndex + 1 }} / {{ selectedGuesthouse?.guesthouse_media.length }}
+              {{ currentSlideIndex + 1 }} / {{ selectedCityHall?.media.length }}
             </div>
 
-            <!-- Next Button -->
             <button
               @click="nextSlide"
-              class="navigation-button bg-white bg-opacity-75 hover:bg-opacity-100 rounded-full p-3 text-xl z-20"
-              :disabled="currentSlideIndex === selectedGuesthouse?.guesthouse_media.length - 1"
+              class="navigation-button text-black bg-white bg-opacity-75 hover:bg-opacity-100 rounded-full p-3 text-xl z-20"
+              :disabled="currentSlideIndex === selectedCityHall?.media.length - 1"
               :class="{
                 'opacity-50 cursor-not-allowed':
-                  currentSlideIndex === selectedGuesthouse?.guesthouse_media.length - 1,
+                  currentSlideIndex === selectedCityHall?.media.length - 1,
               }"
             >
               ▶
@@ -3337,7 +3330,7 @@ export default {
       isLoadingReviews: false, // loading state untuk review
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
-      isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isSubmittingRoom: false, // Loading state ketika
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,

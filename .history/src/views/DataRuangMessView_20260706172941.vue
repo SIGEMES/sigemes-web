@@ -3241,6 +3241,22 @@ export default {
   inject: ['showToast'],
 
   watch: {
+    currentReviewSlideIndex() { this.isImageLoading = true },
+    currentAddGuesthouseSlideIndex() { this.isImageLoading = true },
+    currentAddRoomSlideIndex() { this.isImageLoading = true },
+    currentEditRoomSlideIndex() { this.isImageLoading = true },
+    currentSlideIndex() { this.isImageLoading = true },
+    currentRoomSlideIndex() { this.isImageLoading = true },
+    currentEditGuesthouseSlideIndex() { this.isImageLoading = true },
+
+    showReviewSlideshow(val) { if (val) this.isImageLoading = true },
+    showAddGuesthouseSlideshow(val) { if (val) this.isImageLoading = true },
+    showAddRoomSlideshow(val) { if (val) this.isImageLoading = true },
+    showEditRoomSlideshow(val) { if (val) this.isImageLoading = true },
+    showSlideshow(val) { if (val) this.isImageLoading = true },
+    showRoomSlideshow(val) { if (val) this.isImageLoading = true },
+    showEditGuesthouseSlideshow(val) { if (val) this.isImageLoading = true },
+
     formStep(newVal, oldVal) {
       if (newVal === 1 && oldVal === 2) {
         this.$nextTick(() => {
@@ -3338,6 +3354,7 @@ export default {
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
       isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isImageLoading: false, // Loading state untuk foto
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,

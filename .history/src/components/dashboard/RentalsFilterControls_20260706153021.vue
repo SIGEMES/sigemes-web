@@ -29,7 +29,7 @@
       </div>
 
       <!-- Dropdown Kustom untuk Urutkan -->
-      <!-- <div class="relative"> -->
+      <div class="relative">
         <!-- <div
           class="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-3 py-2.5 min-w-[140px] cursor-pointer hover:border-blue-400 transition-colors"
           @click="toggleSortDropdown"
@@ -61,7 +61,7 @@
         </div> -->
 
         <!-- Menu Dropdown Urutkan -->
-        <!-- <div
+        <div
           v-if="showSortDropdown"
           class="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10"
         >
@@ -76,8 +76,8 @@
               {{ option.label }}
             </div>
           </div>
-        </div> -->
-      <!-- </div> -->
+        </div>
+      </div>
 
       <!-- Dropdown Kustom untuk Item Per Halaman -->
       <div class="relative">

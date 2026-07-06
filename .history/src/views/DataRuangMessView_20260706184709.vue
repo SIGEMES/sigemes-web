@@ -3338,6 +3338,7 @@ export default {
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
       isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isImageLoading
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,

@@ -1762,10 +1762,9 @@
                     <!-- Photo upload section -->
                     <div class="mb-6 text-center">
                       <div
-                        class="relative w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center mb-2 cursor-pointer"
-                        @click="triggerEditRoomPhotoInput"
+                        class="relative w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center mb-2"
                       >
-                        <div v-if="editRoomPhotoPreviews.length === 0" class="text-center">
+                        <div v-if="roomPhotoPreviews.length === 0" class="text-center cursor-pointer" @click="triggerRoomPhotoInput">
                           <div
                             class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2"
                           >
@@ -1784,25 +1783,24 @@
                               />
                             </svg>
                           </div>
-                          <div class="text-black font-bold">Tambah Foto Ruang</div>
+                          <div class="text-black data-gedung-text font-bold">Tambah Foto Ruang</div>
                         </div>
 
-                        <!-- Photo previews dengan slideshow click handler -->
                         <div v-else class="flex overflow-x-auto p-2 w-full h-full">
                           <div
-                            v-for="(preview, index) in editRoomPhotoPreviews"
-                            :key="index"
-                            class="relative flex-shrink-0 w-32 h-32 mr-2"
-                          >
-                            <img
-                              :src="preview"
-                              class="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                              @click.stop="openEditRoomSlideshow(index)"
-                            />
-                            <button
-                              @click.stop="removeEditRoomPhoto(index)"
-                              class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                              v-for="(preview, index) in roomPhotoPreviews"
+                              :key="index"
+                              class="relative flex-shrink-0 w-32 h-32 mr-2"
                             >
+                              <img
+                                :src="preview"
+                                class="w-32 h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition opacity"
+                                @click.prevent.stop="openAddRoomSlideshow(index)"
+                              />
+                              <button
+                                @click.prevent.stop="removeRoomPhoto(index)"
+                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                              >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4"
@@ -1820,10 +1818,9 @@
                             </button>
                           </div>
 
-                          <!-- Add more photos button -->
                           <div
                             class="flex-shrink-0 w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer"
-                            @click.stop="triggerEditRoomPhotoInput"
+                            @click="triggerRoomPhotoInput"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1843,13 +1840,13 @@
                         </div>
 
                         <input
+                          id="roomPhotoInput"
                           type="file"
-                          ref="editRoomPhotoInput"
-                          id="editRoomPhotoInput"
+                          ref="roomPhotoInput"
                           multiple
                           accept="image/*"
                           class="hidden"
-                          @change="handleEditRoomPhotoChange"
+                          @change="handleRoomPhotoChange"
                         />
                       </div>
                     </div>

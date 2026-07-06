@@ -1097,37 +1097,37 @@ export default {
     },
 
     applySorting(data) {
-      const sortedData = [...data]
+  const sortedData = [...data]
 
-      switch (this.sortBy) {
-        case 'newest':
-          return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
-            return dateB - dateA // Terbaru dulu (descending)
-          })
+  switch (this.sortBy) {
+    case 'newest':
+      return sortedData.sort((a, b) => {
+        // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
+        const dateA = new Date(a.created_at).getTime()
+        const dateB = new Date(b.created_at).getTime()
+        return dateB - dateA // Terbaru dulu (descending)
+      })
 
-        case 'oldest':
-          return sortedData.sort((a, b) => {
-            // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
-            const dateA = new Date(a.created_at).getTime()
-            const dateB = new Date(b.created_at).getTime()
-            return dateA - dateB // Terlama dulu (ascending)
-          })
+    case 'oldest':
+      return sortedData.sort((a, b) => {
+        // Konversi string ISO ke bentuk timestamp milidetik secara eksplisit
+        const dateA = new Date(a.created_at).getTime()
+        const dateB = new Date(b.created_at).getTime()
+        return dateA - dateB // Terlama dulu (ascending)
+      })
 
-        case 'name':
-          return sortedData.sort((a, b) => {
-            // Prioritaskan membaca objek renter.fullname bawaan JSON API agar tidak terkena race condition
-            const nameA = (a.renter?.fullname || a.renterName || '-').toLowerCase()
-            const nameB = (b.renter?.fullname || b.renterName || '-').toLowerCase()
-            return nameA.localeCompare(nameB, 'id', { numeric: true }) // Urut abjad A-Z
-          })
+    case 'name':
+      return sortedData.sort((a, b) => {
+        // Prioritaskan membaca objek renter.fullname bawaan JSON API agar tidak terkena race condition
+        const nameA = (a.renter?.fullname || a.renterName || '-').toLowerCase()
+        const nameB = (b.renter?.fullname || b.renterName || '-').toLowerCase()
+        return nameA.localeCompare(nameB, 'id', { numeric: true }) // Urut abjad A-Z
+      })
 
-        default:
-          return sortedData
-      }
-    },
+    default:
+      return sortedData
+  }
+},
 
     openFilterModal() {
       // Sinkronisasi nilai filter modal (temp) dengan filter yang sedang aktif diterapkan (applied)

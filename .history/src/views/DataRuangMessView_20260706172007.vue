@@ -3241,6 +3241,8 @@ export default {
   inject: ['showToast'],
 
   watch: {
+
+    
     formStep(newVal, oldVal) {
       if (newVal === 1 && oldVal === 2) {
         this.$nextTick(() => {
@@ -3338,6 +3340,7 @@ export default {
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
       isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isImageLoading: false, // Loading state untuk foto
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,

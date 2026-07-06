@@ -3301,6 +3301,7 @@ export default {
       showEditGuesthouseModal: false,
       editFormStep: 1,
       editGuesthouseId: null,
+      
       isSubmittingEditGuesthouse: false,
       isSubmittingEditRoom: false,
       isDeletingRoom: false,
@@ -3337,7 +3338,7 @@ export default {
       isLoadingReviews: false, // loading state untuk review
       isLoadingAdmins: false, // Loading state untuk data admin
       isSubmittingGuesthouse: false, // Loading state ketika submit input gedung mess
-      isSubmittingRoom: false, // Loading state ketika submit input ruang gedung mess
+      isSubmittingRoom: false, // Loading state ketika
       showModal: false,
       showAddGuesthouseModal: false, // state awal
       showAddGuesthouseSlideshow: false,
